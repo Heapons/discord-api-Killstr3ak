@@ -32,7 +32,7 @@ public void OnPluginStart()
 /* -- */
 
 /* Create reaction */
-	bot.CreateReactionID("866539462401982514", "869072008464441405", DiscordEmoji.FromName(":100:"));
+	bot.CreateReactionID("866539462401982514", "869072008464441405", DiscordEmoji.FromName("💯"));
 /* -- */
 
 /* Delete animated custom reaction that was created by this bot */
