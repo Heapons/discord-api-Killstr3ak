@@ -329,7 +329,7 @@ methodmap DiscordBot < JSON_Object
 	* @param data			custom data passed through the request to use in the callback
 	* @param data2			custom data passed through the request to use in the callback
 	*/
-	public native void GetGuildMember(DiscordGuild guild, DiscordUser user, OnGetDiscordGuildUser callback, OnNotGetDiscordGuildUser callback2, any data = 0, any data2 = 0);
+	public native void GetGuildMember(DiscordGuild guild, DiscordUser user, OnGetDiscordGuildUser callback, OnFailedGetDiscordGuildUser callback2, any data = 0, any data2 = 0);
 
 	/**
 	* Returns a guild member object for the specified user id.
@@ -343,7 +343,7 @@ methodmap DiscordBot < JSON_Object
 	* @param data			custom data passed through the request to use in the callback
 	* @param data2			custom data passed through the request to use in the callback
 	*/
-	public native void GetGuildMemberID(const char[] guildid, const char[] userid, OnGetDiscordGuildUser callback, OnNotGetDiscordGuildUser callback2, any data = 0, any data2 = 0);
+	public native void GetGuildMemberID(const char[] guildid, const char[] userid, OnGetDiscordGuildUser callback, OnFailedGetDiscordGuildUser callback2, any data = 0, any data2 = 0);
 
 	/**
 	* Get a guild scheduled event.
