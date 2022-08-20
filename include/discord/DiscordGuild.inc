@@ -172,7 +172,7 @@ typeset OnGetDiscordGuild
 
 /** DiscordBot.GetGuildMember | DiscordBot.GetGuildMemberID
 *
-* Called as callback after a successful request.
+*	Called as callback after a successful request.
 *
 */
 typeset OnGetDiscordGuildUser
@@ -209,6 +209,44 @@ typeset OnGetDiscordGuildUser
 	* @noreturn
 	*/
 	function void (DiscordBot bot, DiscordGuildUser guildUser, any data, any data2);
+}
+
+/** DiscordBot.GetGuildMember | DiscordBot.GetGuildMemberID
+*
+*	Called as callback after a failed "not found" request.
+*
+*/
+typeset OnFailedGetDiscordGuildUser
+{
+	/**
+	*
+	* @param bot		same handle as the bot you have used to call the native.
+	* @param sUserID	sUserID which was not found in the guild.
+	*
+	* @noreturn
+	*/
+	function void (DiscordBot bot, const char[] sUserID);
+	
+	/**
+	*
+	* @param bot		same handle as the bot you have used to call the native.
+	* @param sUserID	sUserID which was not found in the guild.
+	* @param data		custom data passed through the request to use in the callback
+	*
+	* @noreturn
+	*/
+	function void (DiscordBot bot, const char[] sUserID, any data);
+	
+	/**
+	*
+	* @param bot		same handle as the bot you have used to call the native.
+	* @param sUserID	sUserID which was not found in the guild.
+	* @param data		custom data passed through the request to use in the callback
+	* @param data2		custom data passed through the request to use in the callback
+	*
+	* @noreturn
+	*/
+	function void (DiscordBot bot, const char[] sUserID, any data, any data2);
 }
 
 /** DiscordBot.GetGuildScheduledEvent

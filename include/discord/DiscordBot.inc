@@ -325,10 +325,11 @@ methodmap DiscordBot < JSON_Object
 	* @param guild			DiscordGuild from where you want to get the user.
 	* @param user			DiscordUser that you want to get. (DiscordGuildUser object is different than a normal DiscordUser)
 	* @param callback		a DiscordGuildUser object on success.
+	* @param callback2		a callback on fail.
 	* @param data			custom data passed through the request to use in the callback
 	* @param data2			custom data passed through the request to use in the callback
 	*/
-	public native void GetGuildMember(DiscordGuild guild, DiscordUser user, OnGetDiscordGuildUser callback, any data = 0, any data2 = 0);
+	public native void GetGuildMember(DiscordGuild guild, DiscordUser user, OnGetDiscordGuildUser callback, OnNotGetDiscordGuildUser callback2, any data = 0, any data2 = 0);
 
 	/**
 	* Returns a guild member object for the specified user id.
@@ -338,10 +339,11 @@ methodmap DiscordBot < JSON_Object
 	* @param guildid		guild ID from where you want to get the user.
 	* @param userid			user ID that you want to get. (DiscordGuildUser object is different than a normal DiscordUser)
 	* @param callback		a DiscordGuildUser object on success.
+	* @param callback2		a callback on fail.
 	* @param data			custom data passed through the request to use in the callback
 	* @param data2			custom data passed through the request to use in the callback
 	*/
-	public native void GetGuildMemberID(const char[] guildid, const char[] userid, OnGetDiscordGuildUser callback, any data = 0, any data2 = 0);
+	public native void GetGuildMemberID(const char[] guildid, const char[] userid, OnGetDiscordGuildUser callback, OnNotGetDiscordGuildUser callback2, any data = 0, any data2 = 0);
 
 	/**
 	* Get a guild scheduled event.
@@ -641,10 +643,10 @@ methodmap DiscordBot < JSON_Object
 	* Delete multiple messages in a single request.
 	* This endpoint can only be used on guild channels and requires the MANAGE_MESSAGES permission.
 	*
-	* @param channel		channel where the message is.
+	* @param channel id		channel id where the messages are.
 	* @param messages		an array of message ids to delete (2-100).
 	*/
-	public native void DeleteMessagesBulk(DiscordChannel channel, DiscordMessageList messages);
+	public native void DeleteMessagesBulk(const char[] channelid, DiscordMessageList messages);
 
 	/**
 	* Returns the messages for a channel.
