@@ -351,27 +351,28 @@ methodmap DiscordEmbed < JSON_Object
 
 public int HexToDec(const char[] hex)
 {
-	//i = 1 to skip the #
-    int i = 1, result, value;
-    while((value = IsHex(hex[i++])) != -1)
-    {
-        result *= 16 + value;
-    }
+	int i, val, decimal;
+	int len = strlen(hex);
+	len--;
+	
+	for(i = 0; hex[i] != '\0'; i++)
+	{
+		/* Find the decimal representation of hex[i] */
+		if(hex[i] >= '0' && hex[i] <= '9')
+		{
+			val = hex[i] - 48;
+		}
+		else if(hex[i] >= 'a' && hex[i] <= 'f')
+		{
+			val = hex[i] - 97 + 10;
+		}
+		else if(hex[i] >= 'A' && hex[i] <= 'F')
+		{
+			val = hex[i] - 65 + 10;
+		}
 
-    return result
-}
- 
-public int IsHex(char ch)
-{
-    if(!ch)
-        return -1;
-    
-    if('0' <= ch <= '9')
-        return ch - '0';
-    
-    ch &= ~0x20;
-    if('A' <= ch <= 'F')
-        return ch - 'A' + 10;
-    
-    return -1;
+		decimal += val * RoundToFloor(Pow(float(16),float(len)));
+		len--;
+	}
+	return decimal;
 }
