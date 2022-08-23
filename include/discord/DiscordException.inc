@@ -11,5 +11,6 @@ methodmap DiscordException __nullable__ /* < Exception */
 		SetGlobalTransTarget(LANG_SERVER);
 		VFormat(buffer, sizeof(buffer), error, 2);
 		LogError("Discord Exception: %s", buffer);
+		return view_as<DiscordException>(1);	// To avoid SM 1.11 compile error.
 	}
 }
