@@ -13,7 +13,7 @@ methodmap DiscordWebHook < JSON_Object
 	{
 		JSON_Object obj = new JSON_Object();
 		obj.SetString("__endpoint", endpoint);
-		obj.SetKeyHidden("__endpoint", true);
+		obj.SetHidden("__endpoint", true);
 		return view_as<DiscordWebHook>(obj);
 	}
 
