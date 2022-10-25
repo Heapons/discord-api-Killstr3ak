@@ -59,12 +59,28 @@ static stock Action GetMessageTimer(Handle timer, DataPack pack)
 static int ReceivedData(const char[] data, DataPack pack)
 {
 	pack.Reset();
-	DiscordBot bot = pack.ReadCell();
+	DiscordBot bot = view_as<DiscordBot>(pack.ReadCell());
 	Handle plugin = pack.ReadCell();
 	Function callback = pack.ReadFunction();
 	DiscordChannel channel = pack.ReadCell();
 
-	if(!bot.IsListeningToChannel(channel) || callback == INVALID_FUNCTION)
+	if(bot == null)
+	{
+		delete pack;
+		return;
+	}
+	
+	if(!bot.IsListeningToChannel(channel))
+	{
+		if(channel != null)
+		{
+			json_cleanup_and_delete(channel);
+		}
+		delete pack;
+		return;
+	}
+	
+	if(callback == INVALID_FUNCTION)
 	{
 		delete pack;
 		return;
@@ -97,7 +113,5 @@ static int ReceivedData(const char[] data, DataPack pack)
 		Call_PushCell(message);
 		Call_Finish();
 	}
-
-	messages.Dispose();
 	CreateTimer(bot.MessageCheckInterval, GetMessageTimer, pack);
 }
