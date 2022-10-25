@@ -8,6 +8,7 @@
 
 /* https://discord.com/developers/docs/reference#api-versioning-api-versions */
 #define API_VERSION 10
+#define PLUGIN_VERSION "1.0.1"
 
 #include "discord/Shared.sp"
 #include "discord/Message.sp"
@@ -27,7 +28,7 @@ public Plugin myinfo =
 	name = "Discord API",
 	author = "Nexd @ Eternar",
 	description = "This library is limited to the basic REST API that Discord provides.",
-	version = "1.0.1",
+	version = PLUGIN_VERSION,
 	url = "https://github.com/KillStr3aK | https://eternar.dev"
 };
 
@@ -104,8 +105,21 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 	CreateNative("DiscordBot.DeleteAllReactionsEmoji", DiscordBot_DeleteAllReactionsEmoji);
 	CreateNative("DiscordBot.DeleteAllReactionsEmojiID", DiscordBot_DeleteAllReactionsEmojiID);
+	
+	CreateNative("DiscordAPI_Version", Native_Version);
+	
 	RegPluginLibrary("Discord-API");
 	return APLRes_Success;
+}
+
+public int Native_Version(Handle plugin, int numParams)
+{
+	char sBuffer[16];
+	Format(sBuffer, 16, "%s", PLUGIN_VERSION);
+	
+	ReplaceString(sBuffer, 16, ".", "");
+	
+	return StringToInt(sBuffer);
 }
 
 public void OnPluginStart()
