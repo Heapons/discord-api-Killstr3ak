@@ -23,10 +23,7 @@ static void ListenGetMessages(DiscordBot bot, DiscordChannel channel, DataPack p
 
 	char route[256];
 
-	if(lastmessageid[0])
-		Format(route, sizeof(route), "channels/%s/messages?limit=%i&after=%s", channelid, 100, lastmessageid);
-	else
-		Format(route, sizeof(route), "channels/%s/messages?limit=%i", channelid, 100);
+	Format(route, sizeof(route), "channels/%s/messages?limit=%i&after=%s", channelid, 100, lastmessageid);
 
 	SendRequest(bot, route, _, k_EHTTPMethodGET, OnListenChannelDataReceived, _, pack);
 }
@@ -35,9 +32,14 @@ public int OnListenChannelDataReceived(Handle request, bool failure, int offset,
 {
 	if(failure || (statuscode != 200 && statuscode != 204))
 	{
-		if(statuscode == 400 || statuscode == 429 || statuscode == 500)
+		//		bad format	 		rate limit   		server error handling	 bad gateway
+		if(statuscode == 400 || statuscode == 429 || statuscode == 500 || statuscode == 502)
 		{
-			// bad format or rate limit or server error handling
+			pack.Reset();
+			DiscordBot bot = pack.ReadCell();
+			CreateTimer(bot.MessageCheckInterval, GetMessageTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
+			delete request;
+			return;
 		}
 		
 		new DiscordException("OnListenChannelDataReceived - Fail %i %i", failure, statuscode);
