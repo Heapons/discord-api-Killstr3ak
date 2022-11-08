@@ -8,7 +8,7 @@
 
 /* https://discord.com/developers/docs/reference#api-versioning-api-versions */
 #define API_VERSION 10
-#define PLUGIN_VERSION "1.0.1"
+#define PLUGIN_VERSION "1.0.2"
 
 #include "discord/Shared.sp"
 #include "discord/Message.sp"
@@ -143,9 +143,47 @@ void SendRequest(DiscordBot bot, const char[] route, JSON_Object json = null, EH
 
 	char szEndpoint[512];
 	Format(szEndpoint, sizeof(szEndpoint), "https://discord.com/api/v%i/%s", API_VERSION, route);
-
-	DiscordRequest request = new DiscordRequest(szEndpoint, method);
 	
+	DiscordRequest request = new DiscordRequest(szEndpoint, method);
+	if(request == null)
+	{
+		DataPack dp = new DataPack();
+		dp.WriteCell(bot);
+		dp.WriteString(route);
+		dp.WriteCell(json);
+		dp.WriteCell(method);
+		dp.WriteFunction(OnDataReceivedCb);
+		dp.WriteFunction(OnRequestCompletedCb);
+		dp.WriteCell(data1);
+		dp.WriteCell(data2);
+		CreateTimer(2.0, SendRequestDelayed, dp);
+		delete request;
+		return;
+	}
+
+	SendDiscordRequest(request, bot, route, json, OnDataReceivedCb, OnRequestCompletedCb, data1, data2);
+}
+
+public Action SendRequestDelayed(Handle timer, DataPack dp)
+{
+	char route[128];
+	
+	dp.Reset();
+	DiscordBot bot = view_as<DiscordBot>(dp.ReadCell());
+	dp.ReadString(route, 128);
+	JSON_Object json = view_as<JSON_Object>(dp.ReadCell());
+	EHTTPMethod method = view_as<EHTTPMethod>(dp.ReadCell());
+	SteamWorksHTTPDataReceived OnDataReceivedCb =  view_as<SteamWorksHTTPDataReceived>(dp.ReadFunction());
+	SteamWorksHTTPRequestCompleted OnRequestCompletedCb =  view_as<SteamWorksHTTPRequestCompleted>(dp.ReadFunction());
+	any data1 = dp.ReadCell();
+	any data2 = dp.ReadCell();
+	delete dp;
+	
+	SendRequest(bot, route, json, method, OnDataReceivedCb, OnRequestCompletedCb, data1, data2);
+}
+
+void SendDiscordRequest(DiscordRequest request, DiscordBot bot, const char[] route, JSON_Object json = null, SteamWorksHTTPDataReceived OnDataReceivedCb = INVALID_FUNCTION, SteamWorksHTTPRequestCompleted OnRequestCompletedCb = INVALID_FUNCTION, any data1 = 0, any data2 = 0)
+{
 	if(bot != null)
 	{
 		request.SetBot(bot);
@@ -163,10 +201,10 @@ void SendRequest(DiscordBot bot, const char[] route, JSON_Object json = null, EH
 	}
 	request.SetContentSize();
 	
-	SendDiscordRequest(request, route);
+	SendHTTPRequest(request, route);
 }
 
-void SendDiscordRequest(DiscordRequest request, const char[] route)
+void SendHTTPRequest(DiscordRequest request, const char[] route)
 {
 	int time = GetTime();
 	int resetTime;
@@ -232,7 +270,7 @@ public Action SendRequestAgain(Handle timer, DataPack dp)
 	char route[128];
 	dp.ReadString(route, 128);
 	delete dp;
-	SendDiscordRequest(request, route);
+	SendHTTPRequest(request, route);
 }
 
 public int OnHeadersReceivedCb(Handle request, bool failure, any data, any datapack)
