@@ -22,7 +22,12 @@ static void ListenGetMessages(DiscordBot bot, DiscordChannel channel, DataPack p
 	channel.GetLastMessageID(lastmessageid, sizeof(lastmessageid));
 
 	char route[256];
-	Format(route, sizeof(route), "channels/%s/messages?limit=%i&after=%s", channelid, 100, lastmessageid);
+
+	if(lastmessageid[0])
+		Format(route, sizeof(route), "channels/%s/messages?limit=%i&after=%s", channelid, 100, lastmessageid);
+	else
+		Format(route, sizeof(route), "channels/%s/messages?limit=%i", channelid, 100);
+
 	SendRequest(bot, route, _, k_EHTTPMethodGET, OnListenChannelDataReceived, _, pack);
 }
 
@@ -74,6 +79,7 @@ static int ReceivedData(const char[] data, DataPack pack)
 	{
 		if(channel != null)
 		{
+			channel.SetLastMessageID("");
 			json_cleanup_and_delete(channel);
 		}
 		delete pack;
@@ -113,5 +119,5 @@ static int ReceivedData(const char[] data, DataPack pack)
 		Call_PushCell(message);
 		Call_Finish();
 	}
-	CreateTimer(bot.MessageCheckInterval, GetMessageTimer, pack);
+	CreateTimer(bot.MessageCheckInterval, GetMessageTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
 }
