@@ -8,7 +8,7 @@
 
 /* https://discord.com/developers/docs/reference#api-versioning-api-versions */
 #define API_VERSION 10
-#define PLUGIN_VERSION "1.0.2"
+#define PLUGIN_VERSION "1.0.3"
 
 #include "discord/Shared.sp"
 #include "discord/Message.sp"
@@ -156,7 +156,7 @@ void SendRequest(DiscordBot bot, const char[] route, JSON_Object json = null, EH
 		dp.WriteFunction(OnRequestCompletedCb);
 		dp.WriteCell(data1);
 		dp.WriteCell(data2);
-		CreateTimer(2.0, SendRequestDelayed, dp);
+		CreateTimer(2.0, SendRequestDelayed, dp, TIMER_FLAG_NO_MAPCHANGE);
 		delete request;
 		return;
 	}
@@ -190,13 +190,14 @@ void SendDiscordRequest(DiscordRequest request, DiscordBot bot, const char[] rou
 	}
 	request.SetJsonBody(json);
 	request.Timeout = 30;
-	request.SetCallbacks(OnRequestCompletedCb, OnHeadersReceivedCb, OnDataReceivedCb);
 	if(data2 != 0)
 	{
+		request.SetCallbacks(OnRequestCompletedCb, _, OnDataReceivedCb);
 		request.SetContextValue(data1, data2);
 	}
 	else
 	{
+		request.SetCallbacks(OnRequestCompletedCb, OnHeadersReceivedCb, OnDataReceivedCb);
 		request.SetContextData(data1, route);
 	}
 	request.SetContentSize();
@@ -252,7 +253,7 @@ void SendHTTPRequest(DiscordRequest request, const char[] route)
 			DataPack dp = new DataPack();
 			dp.WriteCell(request);
 			dp.WriteString(route);
-			CreateTimer(remaining, SendRequestAgain, dp);
+			CreateTimer(remaining, SendRequestAgain, dp, TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else
 		{
@@ -276,6 +277,12 @@ public Action SendRequestAgain(Handle timer, DataPack dp)
 public int OnHeadersReceivedCb(Handle request, bool failure, any data, any datapack)
 {
 	DataPack dp = view_as<DataPack>(datapack);
+	
+	if(dp == INVALID_HANDLE)
+	{
+		delete dp;
+		return;
+	}
 	
 	if(failure)
 	{
