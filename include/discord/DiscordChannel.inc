@@ -7,19 +7,20 @@
 
 enum DiscordChannelType
 {
-	GUILD_TEXT = 0, /* a text channel within a server */
-	DM, /* a direct message between users */
-	GUILD_VOICE, /* a voice channel within a server */
-	GROUP_DM, /* a direct message between multiple users */
-	GUILD_CATEGORY, /* an organizational category that contains up to 50 channels. for further info: https://support.discord.com/hc/en-us/articles/115001580171-Channel-Categories-101 */
-	GUILD_NEWS, /* a channel that users can follow and crosspost into their own server. for further info: https://support.discord.com/hc/en-us/articles/360032008192 */
-	GUILD_STORE, /* a channel in which game developers can sell their game on Discord. for further info: https://discord.com/developers/docs/game-and-server-management/special-channels */
-	GUILD_NEWS_THREAD = 10, /* a temporary sub-channel within a GUILD_NEWS channel */
-	GUILD_PUBLIC_THREAD, /* a temporary sub-channel within a GUILD_TEXT channel */
-	GUILD_PRIVATE_THREAD, /* a temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission */
-	GUILD_STAGE_VOICE, /* a voice channel for hosting events with an audience. for further info: https://support.discord.com/hc/en-us/articles/1500005513722 */
-	GUILD_DIRECTORY, /* the channel in a hub containing the listed servers */
-	GUILD_FORUM /* (still in development) a channel that can only contain threads, The GUILD_FORUM channel type is still in active development. Avoid implementing any features that are not documented here, since they are subject to change without notice! */
+	GUILD_TEXT = 0,
+	DM = 1,
+	GUILD_VOICE = 2,
+	GROUP_DM = 3,
+	GUILD_CATEGORY = 4,
+	GUILD_ANNOUNCEMENT = 5,
+	GUILD_STORE = 6,
+	ANNOUNCEMENT_THREAD = 10,
+	PUBLIC_THREAD = 11,
+	PRIVATE_THREAD = 12,
+	GUILD_STAGE_VOICE = 13,
+	GUILD_DIRECTORY = 14,
+	GUILD_FORUM = 15,
+	GUILD_MEDIA = 16
 }
 
 enum DiscordChannelVideoQualityMode
